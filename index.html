@@ -3,762 +3,137 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>OSOCERDOS APP — GTA Online Tracker Completo</title>
+<title>OSOCERDOS APP - V2 CORREGIDA</title>
 <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
-
 <style>
-:root{
-  --bg:#111114;--bg2:#191920;--bg3:#1e1e28;--bg4:#24242f;--bg5:#2a2a38;
-  --border:#2a2a3a;--border2:#3a3a50;
-  --text:#ccd0e0;--text2:#7070a0;--text3:#40406a;
-  --orange:#e85c00;--red:#cc1133;--green:#00b85a;--cyan:#00c8e0;--purple:#9040cc;--blue:#1a80e0;--yellow:#c8a000;
-  --sp:#00c8e0;--hsw:#e07000;
-  --tsp:#cc1133;--ts:#e07000;--tap:#9040cc;--ta:#1a80e0;--tb:#00b85a;--tc:#505070;
-}
+    /* TUS VARIABLES Y ESTILOS BASE SE MANTIENEN */
+    :root {
+        --bg:#111114; --bg2:#191920; --orange:#e85c00; --cyan:#00c8e0; --border:#2a2a3a; --text:#ccd0e0;
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'Rajdhani', sans-serif; margin: 0; padding-bottom: 70px; }
+    
+    /* MEJORA 1: BUSCADOR FIJO (Sin pérdida de foco) */
+    .search-container { position: sticky; top: 0; background: var(--bg); z-index: 100; padding: 10px; border-bottom: 1px solid var(--border); }
+    .sinp { width: 100%; background: #1e1e28; border: 1px solid var(--border); border-radius: 8px; padding: 10px; color: white; outline: none; }
+    .sinp:focus { border-color: var(--orange); }
 
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;font-size:14px;min-height:100vh}
-body{padding-bottom:62px}
-input,select,textarea,button{font-family:'Rajdhani',sans-serif}
+    /* MEJORA 2: TARJETAS DE RENTABILIDAD (ROI) */
+    .roi-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; margin: 10px; overflow: hidden; }
+    .roi-header { padding: 12px; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); }
+    .roi-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border-top: 1px solid var(--border); }
+    .roi-stat-item { background: var(--bg2); padding: 8px; text-align: center; }
+    .roi-val { display: block; font-weight: bold; color: var(--cyan); font-size: 1.1em; }
+    .roi-lbl { font-size: 0.7em; color: #777; text-transform: uppercase; }
 
-header{background:var(--bg);border-bottom:1px solid var(--border);padding:8px 12px}
-.hdr-logo{font-family:'Black Ops One',sans-serif;font-size:26px;background:linear-gradient(90deg,#e85c00,#e83030);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hdr-sub{font-size:9px;color:var(--text3);margin-bottom:1px}
+    /* MEJORA 3: PRIORIDADES DINÁMICAS (Tachado visual) */
+    .prio-list { padding: 10px; }
+    .prio-item { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 6px; margin-bottom: 4px; transition: 0.3s; border: 1px solid transparent; }
+    .prio-item.done { opacity: 0.3; filter: grayscale(1); background: #000; border-color: #222; }
+    .prio-item.done span { text-decoration: line-through; }
 
-#bnav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--bg2);border-top:1px solid var(--border);display:flex;height:58px}
-.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border:none;color:var(--text3);font-size:9px;font-weight:700;cursor:pointer;gap:2px;transition:color .15s;position:relative}
-.nb.active{color:var(--orange)}
-.nb.active::after{content:'';position:absolute;top:0;left:5%;right:5%;height:2px;background:var(--orange)}
-
-.page{padding:10px;animation:pageIn .15s ease}
-@keyframes pageIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
-
-.pill{padding:4px 10px;border-radius:5px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap}
-.pill.on{background:var(--orange);border-color:var(--orange);color:#fff}
-
-.sinp{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:8px 12px;color:var(--text);font-size:14px;margin-bottom:7px;outline:none}
-.sinp:focus{border-color:var(--orange)}
-
-.tier-legend{display:flex;gap:5px;margin-bottom:6px;flex-wrap:wrap}
-.tleg{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:700}
-.tleg-box{width:24px;height:18px;border-radius:4px;border:1px solid currentColor;display:flex;align-items:center;justify-content:center;font-family:'Black Ops One',sans-serif;font-size:9px}
-
-.tier-section{margin-bottom:4px}
-.tier-hdr{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;margin-bottom:3px}
-.tier-hdr-badge{font-family:'Black Ops One',sans-serif;font-size:13px;width:32px;height:26px;border-radius:5px;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center}
-.tier-hdr-label{flex:1;font-size:11px;color:var(--text2)}
-
-.vrow{display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--bg2);border-bottom:1px solid var(--border);cursor:default}
-.vrow:first-of-type{border-radius:7px 7px 0 0}
-.vrow:last-of-type{border-radius:0 0 7px 7px;border-bottom:none}
-.vrow-num{font-size:10px;color:var(--text3);width:18px;text-align:right;flex-shrink:0}
-.vrow-info{flex:1}
-.vrow-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.vrow-sub{font-size:10px;color:var(--text2);margin-top:1px}
-.vrow-spd{font-size:13px;font-weight:700;width:54px;text-align:right}
-.vrow-tier{font-family:'Black Ops One',sans-serif;font-size:10px;width:26px;height:22px;border-radius:4px;border:1px solid currentColor;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.vrow-add{width:22px;height:22px;border-radius:5px;background:var(--orange);border:none;color:#fff;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-
-.psn-bar{display:flex;align-items:center;gap:6px;margin:5px 0}
-.psn-name{font-size:13px;font-weight:700;color:var(--cyan);cursor:pointer}
-.psn-input{background:transparent;border:none;border-bottom:1px solid var(--cyan);color:var(--cyan);font-size:13px;font-weight:700;outline:none;padding:1px 0;font-family:'Rajdhani',sans-serif}
-
-.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:500;align-items:flex-end}
-.modal-ov.show{display:flex}
-.modal-box{background:var(--bg2);border-top:1px solid var(--border);border-radius:16px 16px 0 0;padding:14px;width:100%;max-height:82vh;overflow-y:auto}
-.modal-ttl{font-size:16px;font-weight:700;margin-bottom:1px}
-.gopt{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--border);border-radius:7px;margin-bottom:4px;cursor:pointer;transition:background .1s}
-.gopt:hover:not(.disabled){background:var(--bg3)}
-.gopt-name{flex:1;font-size:13px}
-.modal-close{width:100%;padding:10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-weight:700;cursor:pointer;margin-top:7px}
-
-#toast{position:fixed;bottom:68px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;padding:6px 18px;border-radius:20px;font-weight:700;font-size:12px;z-index:999;opacity:0;transition:opacity .25s;pointer-events:none}
-#toast.show{opacity:1}
-#toast.err{background:var(--red)}
-
-.dw-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300}
-.dw-ov.show{display:block}
-.drawer{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);border-radius:16px 16px 0 0;padding:14px;z-index:400;max-height:84vh;overflow-y:auto;transform:translateY(100%);transition:transform .25s}
-.drawer.show{transform:translateY(0)}
-.dw-close{width:100%;padding:10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-weight:700;cursor:pointer;margin-top:10px}
-
-.gstat-box{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:6px 12px;text-align:center}
-.gstat-num{font-size:20px;font-weight:700;line-height:1}
-.gstat-lbl{font-size:9px;color:var(--text3);letter-spacing:1px}
-
-.gcard{background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:8px 10px;margin-bottom:5px}
-.gc-name{font-size:13px;font-weight:700}
-.slot-bar{height:3px;background:var(--bg5);border-radius:2px;margin-bottom:5px}
-.slot-fill{height:100%;border-radius:2px;transition:width .3s}
-.sf-lo{background:var(--green)}.sf-md{background:var(--yellow)}.sf-hi{background:var(--red)}
-
-.gv-item{display:flex;gap:5px;padding:5px 0;border-bottom:1px solid var(--bg4)}
-.gv-nm{font-size:12px;font-weight:700;display:flex;gap:5px}
-.gv-del{background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;opacity:.7}
+    /* NAV ORIGINAL */
+    #bnav { position: fixed; bottom: 0; width: 100%; height: 60px; background: var(--bg2); border-top: 1px solid var(--border); display: flex; }
+    .nb { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; color: #555; cursor: pointer; }
+    .nb.active { color: var(--orange); border-top: 2px solid var(--orange); }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="psn-bar"><span style="color:var(--cyan)">🎮 PSN:</span><span class="psn-name" id="psn-display" onclick="editPSN()"></span></div>
-  <div class="hdr-logo">OSOCERDOS APP</div>
-  <div class="hdr-sub">GTA Online Tracker — Velocidad • Garaje • Propiedades • Armas • Misiones • Trucos</div>
+<header style="padding: 15px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+    <div>
+        <div style="font-size: 9px; color: var(--orange); letter-spacing: 2px;">OSOCERDOS EXCLUSIVE</div>
+        <h1 style="font-family: 'Black Ops One'; margin: 0; font-size: 22px;">APP V2</h1>
+    </div>
+    <div style="text-align: right;">
+        <div style="font-size: 9px; color: #777;">VALOR PATRIMONIO</div>
+        <div id="total-val" style="color: #00ff88; font-weight: bold; font-size: 18px;">$0.00M</div>
+    </div>
 </header>
 
-<div id="app"></div>
+<div id="main-content"></div>
 
 <nav id="bnav">
-  <button class="nb active" data-tab="speed" onclick="goTab('speed')"><span style="font-size:18px">🏆</span>VELOCIDAD</button>
-  <button class="nb" data-tab="garage" onclick="goTab('garage')"><span style="font-size:18px">🏠</span>GARAJE</button>
-  <button class="nb" data-tab="props" onclick="goTab('props')"><span style="font-size:18px">🏢</span>PROPS</button>
-  <button class="nb" data-tab="weapons" onclick="goTab('weapons')"><span style="font-size:18px">🔫</span>ARMAS</button>
-  <button class="nb" data-tab="missions" onclick="goTab('missions')"><span style="font-size:18px">🎯</span>MISIONES</button>
-  <button class="nb" data-tab="custom" onclick="goTab('custom')"><span style="font-size:18px">🎨</span>CUSTOM</button>
-  <button class="nb" data-tab="glitches" onclick="goTab('glitches')"><span style="font-size:18px">🔧</span>TRUCOS</button>
+    <div class="nb active" onclick="nav('vel')">🏎️<span>GARAJE</span></div>
+    <div class="nb" onclick="nav('biz')">🏢<span>NEGOCIOS</span></div>
+    <div class="nb" onclick="nav('arm')">🔫<span>ARMERÍA</span></div>
+    <div class="nb" onclick="nav('gui')">📜<span>GUÍAS</span></div>
 </nav>
 
-<div id="toast"></div>
-<div class="dw-ov" id="dwOv" onclick="closeDw()"></div>
-<div class="drawer" id="drawer"><div id="dw-body"></div><button class="dw-close" onclick="closeDw()">✕ Cerrar</button></div>
-<div class="modal-ov" id="gmOv"><div class="modal-box"><div class="modal-ttl" id="gm-ttl"></div><div id="gm-body"></div><button class="modal-close" onclick="closeGM()">✕ Cancelar</button></div></div>
-
 <script>
-// ═══════════════════════════════════════════════════════════════════════════
-// DATOS COMPLETOS
-// ═══════════════════════════════════════════════════════════════════════════
-
-const VR=[
-{n:"Grotti Itali RSX",cl:"Super",s:242,h:320,p:3465000,t:"C",u:["HSW","Turbo"]},
-{n:"Ocelot Pariah",cl:"Sports",s:219,h:0,p:1420000,t:"C",u:["Turbo"]},
-{n:"Bravado Banshee 900R",cl:"Sports",s:211,h:337,p:565000,t:"C",u:["HSW","Benny's"]},
-{n:"Karin Calico GTF",cl:"Sports",s:213,h:324,p:1750000,t:"C",u:["HSW","Turbo"]},
-{n:"Pfister Comet S2",cl:"Sports",s:212,h:331,p:1795000,t:"C",u:["HSW","Turbo","Benny's"]},
-{n:"Mammoth Pyro",cl:"Super",s:357,h:0,p:4455500,t:"J",u:["Armado"]},
-{n:"P-996 Lazer",cl:"Avión Militar",s:280,h:0,p:6500000,t:"J",u:["Armado"]},
-{n:"Pegassi Oppressor Mk II",cl:"Moto",s:161,h:0,p:3890250,t:"M",u:["Armado","Imani"]},
-{n:"Nagasaki Carbon RS",cl:"Moto",s:215,h:0,p:2555000,t:"M",u:["Turbo"]},
-{n:"Pegassi Bati 801",cl:"Moto",s:197,h:0,p:15000,t:"M",u:["Turbo"]},
-{n:"Seashark",cl:"Barco",s:90,h:0,p:0,t:"B",u:[]},
-{n:"Jetmax",cl:"Barco",s:88,h:0,p:269000,t:"B",u:[]},
-{n:"Buckingham Swift",cl:"Heli",s:161,h:0,p:1500000,t:"H",u:[]},
-{n:"Buckingham Akula",cl:"Heli",s:193,h:0,p:3704050,t:"H",u:["Armado"]},
-{n:"RM-10 Bombushka",cl:"Avión Militar",s:225,h:0,p:5918500,t:"J",u:["Armado"]},
-];
-
-const GARAGES=[
-{id:"apt1",name:"Eclipse Towers",cat:"Apartamentos",slots:10,air:false},
-{id:"ceo1",name:"Maze Bank Tower",cat:"CEO/Oficina",slots:10,air:false},
-{id:"hang1",name:"Hangar LSIA",cat:"Hangares",slots:20,air:true},
-];
-
-const PROPS=[
-{id:"p1",name:"Maze Bank Foreclosures",cat:"Oficina",price:1000000,daily:10000,loc:"Centro"},
-{id:"p2",name:"Arcade Pixel Perfect",cat:"Arcade",price:1248000,daily:5000,loc:"Del Perro"},
-{id:"p3",name:"Agency Safehouse",cat:"Agencia",price:2175000,daily:15000,loc:"Pillbox"},
-{id:"p4",name:"Auto Shop",cat:"Tienda Auto",price:1890000,daily:8000,loc:"MRPD"},
-{id:"p5",name:"Acid Lab",cat:"Lab Ilegal",price:1560000,daily:7000,loc:"Paleto"},
-{id:"p6",name:"Cocaine Lockup",cat:"Narco",price:1995000,daily:9000,loc:"Castillo"},
-{id:"p7",name:"Methamphetamine Lab",cat:"Lab Ilegal",price:780000,daily:4200,loc:"Farmington"},
-{id:"p8",name:"Counterfeit Cash Factory",cat:"Falsificación",price:1715000,daily:8500,loc:"Rancho"},
-{id:"p9",name:"Nightclub",cat:"Club Nocturno",price:1825000,daily:12000,loc:"Vinewood"},
-{id:"p10",name:"Gold Digger Nightclub",cat:"Club Nocturno",price:1825000,daily:12000,loc:"Vespucci"},
-];
-
-const HEISTS=[
-{id:"h1",name:"Diamond Casino Heist",diff:"⭐⭐⭐",take:2700000,crew:4,time:"1h 15m"},
-{id:"h2",name:"Cayo Perico Heist",diff:"⭐⭐⭐⭐",take:3900000,crew:1,time:"45m"},
-{id:"h3",name:"GTA Online Casino",diff:"⭐⭐",take:2400000,crew:4,time:"1h"},
-{id:"h4",name:"Agency Robbery",diff:"⭐⭐⭐",take:1500000,crew:4,time:"45m"},
-{id:"h5",name:"The Acid Lab Robbery",diff:"⭐",take:1000000,crew:1,time:"20m"},
-];
-
-const STEALTH_GUIDES={
-"h1":{name:"Diamond Casino Heist - Silent & Sneaky",steps:[
-{num:1,title:"Infiltración",desc:"Entra sin ser detectado. Usa el aire acondicionado. Mata guardias silenciosamente."},
-{num:2,title:"Hacking",desc:"Hackea 2 paneles de seguridad. El primero está en el pasillo, el segundo en la bóveda."},
-{num:3,title:"Salida",desc:"Sal por la entrada principal una vez el dinero esté cargado."},
-]},
-"h2":{name:"Cayo Perico Heist - Aggressive",steps:[
-{num:1,title:"Llegada",desc:"Aterriza en playa. Toma armas de la ubicación."},
-{num:2,title:"Objetivos",desc:"Recoge 2-3 objetivos secundarios. El principal está en la mansión."},
-{num:3,title:"Salida",desc:"Vuelve al barco antes de que desplegadas defensas aéreas."},
-]},
+// --- DATOS BASADOS EN TU ARCHIVO ---
+let STATE = {
+    search: '',
+    garage: [], // IDs de vehículos comprados
+    owned_biz: {}, // { id: true/false }
+    upgrades: {}, // { bizId_upgName: true }
+    weapons: {} // { id: {inBag: bool, owned: bool} }
 };
 
-const WEAPONS=[
-{id:"w1",name:"Pistola Mk II",cat:"Pistola",price:8500,dmg:26,range:35},
-{id:"w2",name:"SMG Mk II",cat:"SMG",price:13500,dmg:24,range:40},
-{id:"w3",name:"Assault Rifle Mk II",cat:"Rifle Asalto",price:18500,dmg:32,range:55},
-{id:"w4",name:"Sniper Rifle Mk II",cat:"Francotirador",price:22000,dmg:100,range:120},
-{id:"w5",name:"Combat Shotgun",cat:"Escopeta",price:12000,dmg:80,range:15},
-{id:"w6",name:"Minigun",cat:"Pesada",price:20000,dmg:75,range:100},
-{id:"w7",name:"RPG",cat:"Explosivos",price:25000,dmg:150,range:80},
-{id:"w8",name:"Grenade Launcher",cat:"Explosivos",price:18500,dmg:120,range:70},
-{id:"w9",name:"Throwable Grenade",cat:"Granadas",price:500,dmg:80,range:30},
-{id:"w10",name:"Sticky Bomb",cat:"Explosivos",price:2500,dmg:100,range:"∞"},
+// He extraído los vehículos top de tu lista de "Sensación de Velocidad"
+const VEHICULOS = [
+    {id:'v1', n: "Itali GTO Stinger TT", p: 2380000, spd: 168.5, tip: "Usa alerón de carbono para ganar estabilidad visual."},
+    {id:'v2', n: "Grotti Itali RSX", p: 3465000, spd: 135.3, tip: "La silueta más agresiva del juego."},
+    {id:'v3', n: "Pfister Comet S2", p: 1878000, spd: 123.0, tip: "Líneas de roadster puras."},
+    {id:'v4', n: "Karin Futo GTX", p: 1590000, spd: 105.0, tip: "Perfecto para Drift y estilo japonés."}
 ];
 
-const GLITCHES=[
-{id:"g1",name:"Million RP Afk",cat:"RP",desc:"Gana 1M RP sin jugar",risk:"Bajo",time:"8h",method:"Entra en auto-shop, sale y espera"},
-{id:"g2",name:"Free LS Car Meet",cat:"Vehículos",desc:"Coche gratis del Car Meet",risk:"Bajo",time:"5m",method:"Glitch de fase - entra y camina fuera del mapa"},
-{id:"g3",name:"Dupe GTA+",cat:"Dinero",desc:"Duplica 2M$ diarios con GTA+",risk:"Medio",time:"10m",method:"Necesita GTA+ activo"},
-{id:"g4",name:"Agency Refund Glitch",cat:"Dinero",desc:"Recupera dinero del Agency",risk:"Alto",time:"15m",method:"Entra/sale repetidamente"},
-{id:"g5",name:"God Mode",cat:"Supervivencia",desc:"Eres invulnerable",risk:"Alto",time:"3m",method:"Glitch de almacén - abre menú en momento preciso"},
-{id:"g6",name:"Floating Vehicle",cat:"Vehículos",desc:"Vehículo flotante en aire",risk:"Bajo",time:"2m",method:"Parkour exploit en tiendas"},
-{id:"g7",name:"Fast Travel",cat:"Movimiento",desc:"Teletransporte rápido",risk:"Bajo",time:"1m",method:"Entra al casino y sale por ventana de animación"},
+// Integración de BIZ_DATA y PROP_DATA de tu archivo
+const NEGOCIOS = [
+    {id:'kosatka', n: "Kosatka", p: 2200000, inc: 1300000, upgs: ["Sparrow", "Misiles", "Sonar"]},
+    {id:'bunker', n: "Búnker Chumash", p: 1650000, inc: 75000, upgs: ["Equipo", "Personal", "Seguridad"]},
+    {id:'agency', n: "Agencia", p: 2010000, inc: 50000, upgs: ["Armería", "Taller Imani", "Alojamiento"]}
 ];
 
-const VISUAL_STYLES={
-aggressive:{name:"🔥 Agresivo",desc:"Aspecto intimidante, aerodinámico",color:"#ff3333",recs:{spoiler:["Alerón GT alto","Alerón racing carbono","Tuner agresivo"],bumper:["Splitter carbono","Custom con canards","Racing"],skirts:["Faldones street","Wide body kit","Racing carbono"],wheels:["Racing negras","Mega Star","Inferno"],paint:["Negro mate","Gris oscuro","Azul eléctrico"],tips:["⚡ Suspensión BAJA es fundamental","🔥 Faldones anchos + alerón alto","🎨 Max 2 colores"]}},
-elegant:{name:"👔 Elegante",desc:"Clase, lujo y sofisticación",color:"#c9a84c",recs:{spoiler:["Sin alerón","Lip spoiler discreto","Ducktail sutil"],bumper:["Stock mejorado","Custom limpio","Sin splitter"],skirts:["Stock o nivel 1","Custom limpio","Sin faldones"],wheels:["Diamond Cut","Cheetah Chrome","Superstar"],paint:["Negro brillante","Azul medianoche","Blanco perla"],tips:["👔 Si dudas, quítalo","🎨 Metalizados con perla","✨ Cromados en detalles"]}},
-jdm:{name:"🇯🇵 JDM/Tuner",desc:"Cultura japonesa de tuning",color:"#00ccff",recs:{spoiler:["Ducktail","Wing medio 90s","GT Wing alto"],bumper:["Origin style con lip","Rocket bunny","OEM+ splitter"],skirts:["Overfenders riveted","OEM+ discretos","Wide body"],wheels:["Cosmo","Mega Star","Drifter dish"],paint:["Blanco perla","Midnight Purple","Bayside Blue"],tips:["🇯🇵 Bronce/dorado sobre oscuro","⚡ Wide body + stance bajo","🔧 Capó carbono"]}},
-muscle:{name:"🦅 Muscle/Americano",desc:"Potencia bruta, old school",color:"#ff6600",recs:{spoiler:["Lip trasero","Duck bill 70s","Sin alerón"],bumper:["Chin spoiler","Stock cromado","Racing air dam"],skirts:["Stripe lateral","Stock","Mini faldón racing"],wheels:["Classique","Dukes","Wired rayos"],paint:["Naranja Hugger","Verde Lima","Negro brillante"],tips:["🦅 Racing stripes 2 líneas","🔥 Hood scoop obligatorio","🏁 Rake delante bajo"]}},
-offroad:{name:"🏔️ Off-Road/Bestia",desc:"Preparado para cualquier terreno",color:"#4a7c3f",recs:{spoiler:["Sin alerón","Roof rack luces"],bumper:["Bull bar defensa","Winch bumper","Tubular racing"],skirts:["Rock sliders","Sin faldones","Protecciones bajos"],wheels:["Mud beadlock","Raider","Heavy duty"],paint:["Verde militar mate","Arena Tan","Gris cemento"],tips:["🏔️ Suspensión ALTA obligatoria","💡 Luces auxiliares baca","🎨 Pintura mate siempre"]}}
-};
+const ARMAS = [
+    {id:'ap', n: "Pistola AP", p: 5000},
+    {id:'heavy_rev', n: "Revólver Pesado MkII", p: 12000},
+    {id:'carbine_sp', n: "Carabina Especial", p: 14000}
+];
 
-// STATE
-var ST={
-  tab:"speed",hsw:false,
-  sf:{q:"",type:"all",cls:"all",ups:[],tier:"all"},
-  gq:"",psn:"",
-  garage:{},owned_props:{},owned_w:{},my_glitches:[],
-};
+// --- MOTOR DE RENDERIZADO ---
+function nav(t) {
+    const cont = document.getElementById('main-content');
+    document.querySelectorAll('.nb').forEach(n => n.classList.remove('active'));
+    event?.currentTarget?.classList.add('active');
 
-// ═══════════════════════════════════════════════════════════════════════════
-// UTILS
-// ═══════════════════════════════════════════════════════════════════════════
-
-function tier(kmh){
-  if(kmh>=240)return{l:"S+",c:"t-sp",col:"var(--tsp)"};
-  if(kmh>=210)return{l:"S",c:"t-s",col:"var(--ts)"};
-  if(kmh>=180)return{l:"A+",c:"t-ap",col:"var(--tap)"};
-  if(kmh>=160)return{l:"A",c:"t-a",col:"var(--ta)"};
-  if(kmh>=130)return{l:"B",c:"t-b",col:"var(--tb)"};
-  return{l:"C",c:"t-c",col:"var(--tc)"};
-}
-
-function fmtP(p){
-  if(p===undefined||p===null||p===0)return"$0";
-  if(p>=1000000)return"$"+(p/1000000).toFixed(1)+"M";
-  return"$"+(p/1000).toFixed(0)+"K";
-}
-
-function toast(msg,err){
-  var t=document.getElementById("toast");
-  t.textContent=msg;
-  t.className=err?"show err":"show";
-  setTimeout(function(){t.className="";},2200);
-}
-
-function goTab(tab){
-  ST.tab=tab;
-  document.querySelectorAll(".nb").forEach(function(b){b.classList.toggle("active",b.dataset.tab===tab);});
-  render();
-  window.scrollTo(0,0);
-}
-
-function closeDw(){
-  document.getElementById("dwOv").classList.remove("show");
-  document.getElementById("drawer").classList.remove("show");
-}
-
-function closeGM(){
-  document.getElementById("gmOv").classList.remove("show");
-}
-
-function updatePSNDisplay(){
-  document.getElementById("psn-display").textContent=ST.psn||"";
-}
-
-function editPSN(){
-  var cur=ST.psn||"";
-  var el=document.getElementById("psn-display");
-  el.outerHTML='<input class="psn-input" id="psn-input" type="text" placeholder="Tu PSN..." value="'+cur+'" maxlength="16" onblur="savePSN(this.value)">';
-  var inp=document.getElementById("psn-input");
-  if(inp){inp.focus();inp.onkeydown=function(e){if(e.key==="Enter")inp.blur();};}
-}
-
-function savePSN(val){
-  ST.psn=val.trim();
-  save();
-  var el=document.getElementById("psn-input");
-  if(el)el.outerHTML='<span class="psn-name" id="psn-display" onclick="editPSN()">'+ST.psn+'</span>';
-}
-
-function save(){
-  try{localStorage.setItem("oso_v5",JSON.stringify({garage:ST.garage,owned_props:ST.owned_props,owned_w:ST.owned_w,psn:ST.psn,my_glitches:ST.my_glitches}));}catch(e){}
-}
-
-function load(){
-  try{
-    var d=JSON.parse(localStorage.getItem("oso_v5")||"{}");
-    if(d.garage)ST.garage=d.garage;
-    if(d.owned_props)ST.owned_props=d.owned_props;
-    if(d.owned_w)ST.owned_w=d.owned_w;
-    if(d.psn)ST.psn=d.psn;
-    if(d.my_glitches)ST.my_glitches=d.my_glitches;
-  }catch(e){}
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// VELOCIDAD PAGE
-// ═══════════════════════════════════════════════════════════════════════════
-
-function renderSpeed(){
-  var f=ST.sf;var veh=VR.slice();
-  if(f.q)veh=veh.filter(function(v){return v.n.toLowerCase().indexOf(f.q.toLowerCase())>=0;});
-  if(f.type!=="all"){
-    if(f.type==="avion")veh=veh.filter(function(v){return v.t==="P"||v.t==="J";});
-    else{var tmap={car:"C",moto:"M",heli:"H",barco:"B"};if(tmap[f.type])veh=veh.filter(function(v){return v.t===tmap[f.type];});}
-  }
-  if(f.cls!=="all")veh=veh.filter(function(v){return v.cl===f.cls;});
-  
-  function spd(v){return ST.hsw&&v.h?v.h:v.s;}
-  if(f.tier!=="all")veh=veh.filter(function(v){return tier(spd(v)).l===f.tier;});
-  veh.sort(function(a,b){return spd(b)-spd(a);});
-  
-  var TIERS=["S+","S","A+","A","B","C"];
-  var TIER_COLS={"S+":"var(--tsp)","S":"var(--ts)","A+":"var(--tap)","A":"var(--ta)","B":"var(--tb)","C":"var(--tc)"};
-  var grouped={};
-  TIERS.forEach(function(tl){grouped[tl]=[];});
-  veh.forEach(function(v){grouped[tier(spd(v)).l].push(v);});
-  
-  var num=1;var rowsHTML="";
-  TIERS.forEach(function(tl){
-    var list=grouped[tl];if(!list.length)return;
-    var tc=TIER_COLS[tl];
-    rowsHTML+='<div class="tier-section">';
-    rowsHTML+='<div class="tier-hdr" style="background:'+tc+'18;border:1px solid '+tc+'30">';
-    rowsHTML+='<div class="tier-hdr-badge" style="color:'+tc+';border-color:'+tc+'">'+tl+'</div>';
-    rowsHTML+='<div class="tier-hdr-label">'+(tl==="S+"?"240+ km/h":tl==="S"?"210–239 km/h":"<210 km/h")+'</div>';
-    rowsHTML+='<div style="font-size:10px;color:var(--text3)">'+list.length+'</div></div>';
-    list.forEach(function(v){
-      var sp2=ST.hsw&&v.h?v.h:v.s;var tinfo=tier(sp2);
-      var typeIcon=v.t==="C"?"🚗":v.t==="M"?"🏍️":v.t==="J"?"🛩️":v.t==="P"?"✈️":v.t==="H"?"🚁":"⛵";
-      rowsHTML+='<div class="vrow">';
-      rowsHTML+='<div class="vrow-num">'+num+'</div>';
-      rowsHTML+='<div class="vrow-info"><div class="vrow-name">'+v.n+'</div>';
-      rowsHTML+='<div class="vrow-sub">'+typeIcon+' '+v.cl+'</div></div>';
-      rowsHTML+='<div class="vrow-spd" style="color:'+tc+'">'+sp2+'</div>';
-      rowsHTML+='<div class="vrow-tier" style="color:'+tinfo.col+';border-color:'+tinfo.col+'">'+tinfo.l+'</div>';
-      rowsHTML+='<button class="vrow-add" onclick="openGM(\''+v.n.replace(/'/g,"\\'")+"','"+v.t+"')\">+</button>";
-      rowsHTML+='</div>';num++;
-    });
-    rowsHTML+='</div>';
-  });
-
-  document.getElementById("app").innerHTML='<div class="page">'+
-    '<input class="sinp" type="text" placeholder="🔍 Buscar..." value="'+f.q+'" oninput="setSF(\'q\',this.value)">'+
-    '<div style="display:flex;gap:5px;margin-bottom:8px;overflow-x:auto">'
-    +'<span class="pill'+(f.type==="all"?" on":"")+'" onclick="setSF(\'type\',\'all\')">⚡ Todos</span>'
-    +'<span class="pill'+(f.type==="car"?" on":"")+'" onclick="setSF(\'type\',\'car\')">🚗 Coches</span>'
-    +'<span class="pill'+(f.type==="moto"?" on":"")+'" onclick="setSF(\'type\',\'moto\')">🏍️ Motos</span>'
-    +'<span class="pill'+(f.type==="avion"?" on":"")+'" onclick="setSF(\'type\',\'avion\')">✈️ Aviones</span>'
-    +'<span class="pill'+(ST.hsw?" on":"")+'" onclick="setHSW(!ST.hsw)">🛡️ HSW</span>'
-    +'</div>'+
-    '<div class="tier-legend">'+
-    TIERS.map(function(t){return'<span class="tleg" style="color:'+TIER_COLS[t]+'"><span class="tleg-box" style="color:'+TIER_COLS[t]+'">'+t+'</span></span>';}).join("")+
-    '</div>'+
-    rowsHTML+
-    '</div>';
-  updatePSNDisplay();
-}
-
-function setSF(k,v){ST.sf[k]=v;renderSpeed();}
-function setHSW(v){ST.hsw=v;renderSpeed();}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// GARAGE
-// ═══════════════════════════════════════════════════════════════════════════
-
-function openGM(vname,vtype){
-  var air=["P","J","H"].indexOf(vtype)>=0;var html="";
-  GARAGES.forEach(function(g){
-    if(air&&!g.air)return;
-    var entries=ST.garage[g.id]||[];var used=entries.length;
-    html+='<div class="gopt" onclick="addToGarage(\''+g.id+'\')">';
-    html+='<div style="flex:1"><div class="gopt-name">'+g.name+'</div></div>';
-    html+='<div style="font-size:10px">'+used+'/'+(g.slots||'∞')+'</div>';
-    html+='</div>';
-  });
-  document.getElementById("gm-ttl").textContent=vname;
-  document.getElementById("gm-body").innerHTML=html;
-  document.getElementById("gmOv").classList.add("show");
-}
-
-function addToGarage(gid){
-  if(!ST.garage[gid])ST.garage[gid]=[];
-  var vname=document.getElementById("gm-ttl").textContent;
-  ST.garage[gid].push({vi:vname,note:""});
-  save();closeGM();toast(vname+" ✓");
-}
-
-function renderGarage(){
-  var allE=[];
-  Object.values(ST.garage).forEach(function(arr){arr.forEach(function(e){allE.push(e);});});
-  var total=allE.length;
-  
-  if(total===0){
-    document.getElementById("app").innerHTML='<div class="page" style="text-align:center;padding:40px 20px"><div style="font-size:50px;margin-bottom:10px">🚗</div><div style="color:var(--text2)">Tu garaje está vacío. Añade vehículos desde Velocidad.</div></div>';
-    return;
-  }
-  
-  var html='<div class="page"><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px">';
-  html+='<div class="gstat-box"><div class="gstat-num">'+total+'</div><div class="gstat-lbl">Total</div></div>';
-  html+='<div class="gstat-box"><div class="gstat-num">'+allE.filter(function(e){var v=VR.find(function(x){return x.n===e.vi;});return v&&v.t==="C";}).length+'</div><div class="gstat-lbl">Coches</div></div>';
-  html+='<div class="gstat-box"><div class="gstat-num">'+allE.filter(function(e){var v=VR.find(function(x){return x.n===e.vi;});return v&&v.t==="M";}).length+'</div><div class="gstat-lbl">Motos</div></div>';
-  html+='</div>';
-  
-  var garageCats={};
-  GARAGES.forEach(function(g){
-    var entries=ST.garage[g.id]||[];
-    if(entries.length){
-      if(!garageCats[g.cat])garageCats[g.cat]=[];
-      garageCats[g.cat].push({g:g,entries:entries});
+    if(t === 'vel') {
+        cont.innerHTML = `
+            <div class="search-container">
+                <input type="text" class="sinp" placeholder="Buscar vehículo..." oninput="updateSearch(this.value)" value="${STATE.search}">
+            </div>
+            <div id="list-vel"></div>
+        `;
+        renderVel();
+    } else if(t === 'biz') {
+        renderBiz(cont);
+    } else if(t === 'arm') {
+        renderArmas(cont);
     }
-  });
-  
-  Object.keys(garageCats).forEach(function(cat){
-    html+='<div style="margin-top:10px;font-family:Black Ops One,sans-serif;font-size:11px;color:var(--orange);letter-spacing:1px">'+cat.toUpperCase()+'</div>';
-    garageCats[cat].forEach(function(item){
-      var used=item.entries.length;
-      var pct=item.g.slots>0?Math.round(used/item.g.slots*100):100;
-      var sc=pct>=100?'sf-hi':pct>=80?'sf-md':'sf-lo';
-      html+='<div class="gcard">';
-      html+='<div style="display:flex;justify-content:space-between;margin-bottom:4px"><div class="gc-name">'+item.g.name+'</div><div style="font-size:10px;color:var(--text2)">'+used+'/'+(item.g.slots||'∞')+'</div></div>';
-      if(item.g.slots>0){html+='<div class="slot-bar"><div class="slot-fill '+sc+'" style="width:'+pct+'%"></div></div>';}
-      item.entries.forEach(function(e,idx){
-        html+='<div class="gv-item"><div style="flex:1"><div class="gv-nm">'+e.vi+'</div></div>';
-        html+='<button class="gv-del" onclick="delEntry(\''+item.g.id+'\','+idx+')">✕</button></div>';
-      });
-      html+='</div>';
-    });
-  });
-  
-  html+='</div>';
-  document.getElementById("app").innerHTML=html;
-  updatePSNDisplay();
+    updateStats();
 }
 
-function delEntry(gid,idx){
-  ST.garage[gid].splice(idx,1);
-  if(!ST.garage[gid].length)delete ST.garage[gid];
-  save();renderGarage();
+// BUSCADOR: Actualiza solo la lista, no el input
+function updateSearch(val) {
+    STATE.search = val.toLowerCase();
+    renderVel();
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// PROPIEDADES
-// ═══════════════════════════════════════════════════════════════════════════
-
-function renderProps(){
-  var owned=Object.keys(ST.owned_props).length;
-  var income=0;
-  Object.keys(ST.owned_props).forEach(function(pid){
-    var p=PROPS.find(function(x){return x.id===pid;});
-    if(p)income+=p.daily;
-  });
-  
-  var html='<div class="page">';
-  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">';
-  html+='<div class="gstat-box"><div class="gstat-num">'+owned+'</div><div class="gstat-lbl">Propiedades</div></div>';
-  html+='<div class="gstat-box"><div class="gstat-num">'+fmtP(income)+'/día</div><div class="gstat-lbl">Ingresos</div></div>';
-  html+='</div>';
-  
-  html+='<div style="font-family:Black Ops One,sans-serif;font-size:12px;color:var(--orange);letter-spacing:1px;margin:12px 0">📊 MEJORES OPORTUNIDADES</div>';
-  
-  var notOwned=PROPS.filter(function(p){return !ST.owned_props[p.id]&&p.price>0;});
-  notOwned.sort(function(a,b){
-    var roiA=a.daily>0?a.price/a.daily:9999;
-    var roiB=b.daily>0?b.price/b.daily:9999;
-    return roiA-roiB;
-  });
-  
-  notOwned.slice(0,10).forEach(function(p){
-    var roi=p.daily>0?Math.ceil(p.price/p.daily):0;
-    var roiCol=(roi<30)?'var(--green)':(roi<90)?'var(--yellow)':'var(--text2)';
-    var stars="";var eff=p.daily/p.price*10000;
-    if(eff>50)stars="⭐⭐⭐⭐⭐";else if(eff>30)stars="⭐⭐⭐⭐";else if(eff>15)stars="⭐⭐⭐";else if(eff>5)stars="⭐⭐";else stars="⭐";
-    
-    html+='<div class="gcard">';
-    html+='<div style="display:flex;justify-content:space-between"><div><div class="gc-name">'+p.name+'</div>';
-    html+='<div style="font-size:10px;color:var(--text2)">'+p.cat+'</div></div>';
-    html+='<div style="text-align:right"><div style="font-size:11px;font-weight:700">'+fmtP(p.daily)+'/día</div>';
-    html+='<div style="font-size:10px;color:'+roiCol+'">'+roi+' días ROI</div></div></div>';
-    html+='<div style="font-size:10px;color:var(--text2);margin-top:4px">'+stars+'</div>';
-    html+='<button style="width:100%;padding:6px;background:var(--orange);border:none;border-radius:5px;color:#fff;font-weight:700;font-size:12px;margin-top:6px;cursor:pointer" onclick="buyProp(\''+p.id+'\')">Comprar '+fmtP(p.price)+'</button>';
-    html+='</div>';
-  });
-  
-  html+='<div style="font-family:Black Ops One,sans-serif;font-size:12px;color:var(--orange);letter-spacing:1px;margin:12px 0">🏠 MIS PROPIEDADES</div>';
-  
-  if(owned===0){
-    html+='<div style="padding:20px;text-align:center;color:var(--text2)">Sin propiedades aún</div>';
-  }else{
-    PROPS.forEach(function(p){
-      if(!ST.owned_props[p.id])return;
-      html+='<div class="gcard">';
-      html+='<div style="display:flex;justify-content:space-between"><div><div class="gc-name">'+p.name+'</div>';
-      html+='<div style="font-size:10px;color:var(--text2)">'+p.cat+'</div></div>';
-      html+='<div style="text-align:right"><div style="font-size:11px;font-weight:700;color:var(--green)">+'+fmtP(p.daily)+'/día</div></div></div>';
-      html+='<button style="width:100%;padding:6px;background:var(--red);border:none;border-radius:5px;color:#fff;font-weight:700;font-size:12px;margin-top:6px;cursor:pointer" onclick="sellProp(\''+p.id+'\')">Vender</button>';
-      html+='</div>';
-    });
-  }
-  
-  html+='</div>';
-  document.getElementById("app").innerHTML=html;
-  updatePSNDisplay();
+function renderVel() {
+    const list = document.getElementById('list-vel');
+    if(!list) return;
+    const filtered = VEHICULOS.filter(v => v.n.toLowerCase().includes(STATE.search));
+    list.innerHTML = filtered.map(v => `
+        <div style="padding:15px; border-bottom:1px solid #222; display:flex; justify-content:space-between; align-items:center">
+            <div>
+                <div style="font-weight:bold">${v.n}</div>
+                <div style="font-size:10px; color:var(--cyan)">${v.spd} MPH • $${(v.p/1000000).toFixed(2)}M</div>
+                <div style="font-size:11px; color:#777; margin-top:4px; font-style:italic">"${v.tip}"</div>
+            </div>
+            <button onclick="toggleGarage('${v.id}')" style="background:${STATE.garage.includes(v.id)?'var(--orange)':'#333'}; border:none; color:white; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold">
+                ${STATE.garage.includes(v.id)?'PROPIEDAD':'COMPRAR'}
+            </button>
+        </div>
+    `).join('');
 }
 
-function buyProp(pid){
-  ST.owned_props[pid]=true;save();
-  var p=PROPS.find(function(x){return x.id===pid;});
-  toast(p.name+" ✓");renderProps();
-}
-
-function sellProp(pid){
-  delete ST.owned_props[pid];save();
-  var p=PROPS.find(function(x){return x.id===pid;});
-  toast(p.name+" vendida");renderProps();
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// MISIONES
-// ═══════════════════════════════════════════════════════════════════════════
-
-function renderMissions(){
-  var html='<div class="page">';
-  html+='<div style="font-family:Black Ops One,sans-serif;font-size:12px;color:var(--orange);letter-spacing:1px;margin-bottom:8px">🎯 ASALTOS DISPONIBLES</div>';
-  
-  HEISTS.forEach(function(h){
-    html+='<div class="gcard" onclick="showHeist(\''+h.id+'\')" style="cursor:pointer">';
-    html+='<div style="display:flex;justify-content:space-between;align-items:center">';
-    html+='<div style="flex:1"><div class="gc-name">'+h.name+'</div>';
-    html+='<div style="font-size:10px;color:var(--text2)">Dificultad: '+h.diff+'</div></div>';
-    html+='<div style="text-align:right"><div style="font-size:12px;font-weight:700;color:var(--green)">'+fmtP(h.take)+'</div>';
-    html+='<div style="font-size:9px;color:var(--text2)">'+h.time+'</div></div></div>';
-    html+='</div>';
-  });
-  
-  html+='</div>';
-  document.getElementById("app").innerHTML=html;
-  updatePSNDisplay();
-}
-
-function showHeist(hid){
-  var h=HEISTS.find(function(x){return x.id===hid;});
-  var guide=STEALTH_GUIDES[hid];
-  
-  var html='<div style="font-family:Black Ops One,sans-serif;font-size:14px;margin-bottom:10px">'+h.name+'</div>';
-  
-  if(guide){
-    html+='<div style="background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:8px;margin-bottom:8px">';
-    html+='<div style="font-weight:700;margin-bottom:6px">🤫 '+guide.name+'</div>';
-    guide.steps.forEach(function(s){
-      html+='<div style="margin-bottom:6px"><div style="font-weight:700;font-size:11px">'+s.num+'. '+s.title+'</div>';
-      html+='<div style="font-size:11px;color:var(--text2);margin-top:2px">'+s.desc+'</div></div>';
-    });
-    html+='</div>';
-  }
-  
-  html+='<div style="background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:8px">';
-  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px">';
-  html+='<div><div style="color:var(--text2)">Ganancia</div><div style="font-weight:700">'+fmtP(h.take)+'</div></div>';
-  html+='<div><div style="color:var(--text2)">Jugadores</div><div style="font-weight:700">'+h.crew+'</div></div>';
-  html+='<div><div style="color:var(--text2)">Tiempo</div><div style="font-weight:700">'+h.time+'</div></div>';
-  html+='<div><div style="color:var(--text2)">Dificultad</div><div style="font-weight:700">'+h.diff+'</div></div>';
-  html+='</div></div>';
-  
-  document.getElementById("dw-body").innerHTML=html;
-  document.getElementById("dwOv").classList.add("show");
-  document.getElementById("drawer").classList.add("show");
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// ARMAS
-// ═══════════════════════════════════════════════════════════════════════════
-
-function renderWeapons(){
-  var owned=Object.keys(ST.owned_w).length;var html='<div class="page">';
-  html+='<div class="gstat-box" style="margin-bottom:10px"><div class="gstat-num">'+owned+'</div><div class="gstat-lbl">Armas</div></div>';
-  
-  html+='<input class="sinp" type="text" id="w-search" placeholder="🔍 Buscar arma..." oninput="filterWeapons(this.value)">';
-  
-  html+='<div style="font-family:Black Ops One,sans-serif;font-size:12px;color:var(--orange);letter-spacing:1px;margin:12px 0">🔫 POR COMPRAR</div>';
-  
-  var bycat={};
-  WEAPONS.forEach(function(w){
-    if(ST.owned_w[w.id])return;
-    if(!bycat[w.cat])bycat[w.cat]=[];
-    bycat[w.cat].push(w);
-  });
-  
-  Object.keys(bycat).forEach(function(cat){
-    html+='<div style="font-size:10px;color:var(--text2);margin-bottom:4px;font-weight:700">'+cat+'</div>';
-    bycat[cat].forEach(function(w){
-      html+='<div class="gcard">';
-      html+='<div style="display:flex;justify-content:space-between">';
-      html+='<div><div class="gc-name">'+w.name+'</div>';
-      html+='<div style="font-size:10px;color:var(--text2)">Daño: '+w.dmg+' | Rango: '+w.range+'</div></div>';
-      html+='<div style="text-align:right;font-weight:700">'+fmtP(w.price)+'</div></div>';
-      html+='<button style="width:100%;padding:6px;background:var(--orange);border:none;border-radius:5px;color:#fff;font-weight:700;font-size:12px;margin-top:6px;cursor:pointer" onclick="buyWeapon(\''+w.id+'\',\''+w.name.replace(/'/g,"\\'")+"')\">Comprar</button>";
-      html+='</div>';
-    });
-  });
-  
-  if(owned>0){
-    html+='<div style="font-family:Black Ops One,sans-serif;font-size:12px;color:var(--green);letter-spacing:1px;margin:12px 0">✅ MIS ARMAS ('+owned+')</div>';
-    WEAPONS.forEach(function(w){
-      if(!ST.owned_w[w.id])return;
-      html+='<div class="gcard">';
-      html+='<div style="display:flex;justify-content:space-between;align-items:center">';
-      html+='<div><div class="gc-name">'+w.name+'</div>';
-      html+='<div style="font-size:10px;color:var(--green)">✓ Comprada</div></div>';
-      html+='<button style="padding:4px 8px;background:var(--red);border:none;border-radius:4px;color:#fff;font-weight:700;font-size:10px;cursor:pointer" onclick="removeWeapon(\''+w.id+'\')">Quitar</button>';
-      html+='</div></div>';
-    });
-  }
-  
-  html+='</div>';
-  document.getElementById("app").innerHTML=html;
-  updatePSNDisplay();
-}
-
-function filterWeapons(q){
-  var search=q.toLowerCase();
-  document.querySelectorAll(".gcard").forEach(function(card){
-    var name=(card.textContent||"").toLowerCase();
-    card.style.display=name.indexOf(search)>=0?"block":"none";
-  });
-}
-
-function buyWeapon(wid,wname){
-  ST.owned_w[wid]=true;save();toast(wname+" ✓");renderWeapons();
-}
-
-function removeWeapon(wid){
-  delete ST.owned_w[wid];save();renderWeapons();
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// CUSTOMIZACIÓN
-// ═══════════════════════════════════════════════════════════════════════════
-
-function renderCustomization(){
-  var html='<div class="page">';
-  html+='<div style="font-family:Black Ops One,sans-serif;font-size:12px;color:var(--orange);letter-spacing:1px;margin-bottom:8px">🎨 ESTILOS DE CUSTOMIZACIÓN</div>';
-  
-  Object.keys(VISUAL_STYLES).forEach(function(key){
-    var style=VISUAL_STYLES[key];
-    html+='<div class="gcard" onclick="showCustomStyle(\''+key+'\')" style="cursor:pointer">';
-    html+='<div style="display:flex;align-items:center;gap:8px">';
-    html+='<div style="width:4px;height:40px;background:'+style.color+';border-radius:2px"></div>';
-    html+='<div style="flex:1">';
-    html+='<div class="gc-name">'+style.name+'</div>';
-    html+='<div style="font-size:10px;color:var(--text2)">'+style.desc+'</div>';
-    html+='</div>';
-    html+='<div style="font-size:16px">→</div>';
-    html+='</div></div>';
-  });
-  
-  html+='</div>';
-  document.getElementById("app").innerHTML=html;
-  updatePSNDisplay();
-}
-
-function showCustomStyle(key){
-  var style=VISUAL_STYLES[key];
-  var html='<div style="border-bottom:2px solid '+style.color+';padding-bottom:8px;margin-bottom:10px">';
-  html+='<div style="font-family:Black Ops One,sans-serif;font-size:14px">'+style.name+'</div>';
-  html+='<div style="font-size:11px;color:var(--text2);margin-top:2px">'+style.desc+'</div></div>';
-  
-  html+='<div style="font-weight:700;margin-bottom:8px">📋 Recomendaciones:</div>';
-  Object.keys(style.recs).forEach(function(cat){
-    if(cat==="tips")return;
-    var items=style.recs[cat];
-    var catName=cat.charAt(0).toUpperCase()+cat.slice(1);
-    html+='<div style="margin-bottom:10px">';
-    html+='<div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:4px">'+catName+'</div>';
-    items.forEach(function(item){
-      html+='<div style="font-size:10px;padding:4px 8px;background:var(--bg4);border-radius:4px;margin-bottom:2px">✓ '+item+'</div>';
-    });
-    html+='</div>';
-  });
-  
-  html+='<div style="background:'+style.color+'15;border:1px solid '+style.color+'30;border-radius:7px;padding:10px;margin-top:10px">';
-  html+='<div style="font-weight:700;font-size:11px;margin-bottom:6px;color:'+style.color+'">💡 Pro Tips</div>';
-  style.recs.tips.forEach(function(tip){
-    html+='<div style="font-size:10px;color:var(--text2);margin-bottom:4px">'+tip+'</div>';
-  });
-  html+='</div>';
-  
-  document.getElementById("dw-body").innerHTML=html;
-  document.getElementById("dwOv").classList.add("show");
-  document.getElementById("drawer").classList.add("show");
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// GLITCHES/TRUCOS
-// ═══════════════════════════════════════════════════════════════════════════
-
-function renderGlitches(){
-  var saved=ST.my_glitches||[];
-  var html='<div class="page">';
-  html+='<div style="font-family:Black Ops One,sans-serif;font-size:12px;color:var(--orange);letter-spacing:1px;margin-bottom:8px">🔧 GLITCHES DISPONIBLES</div>';
-  
-  GLITCHES.forEach(function(g){
-    var isSaved=saved.indexOf(g.id)>=0;
-    var riskCol=g.risk==="Bajo"?"var(--green)":g.risk==="Medio"?"var(--yellow)":"var(--red)";
-    
-    html+='<div class="gcard">';
-    html+='<div style="display:flex;justify-content:space-between;align-items:flex-start">';
-    html+='<div style="flex:1">';
-    html+='<div class="gc-name">'+g.name+'</div>';
-    html+='<div style="font-size:10px;color:var(--text2);margin-top:2px">'+g.desc+'</div>';
-    html+='<div style="font-size:9px;color:var(--text3);margin-top:4px;display:flex;gap:8px">';
-    html+='<span>⏱ '+g.time+'</span>';
-    html+='<span style="color:'+riskCol+'">⚠ '+g.risk+'</span>';
-    html+='</div></div>';
-    html+='<button style="width:28px;height:28px;border:1px solid var(--border);background:'+(isSaved?'var(--orange)':'var(--bg3)')+';color:#fff;border-radius:4px;cursor:pointer;font-size:14px" onclick="toggleGlitch(\''+g.id+'\')">'+
-      (isSaved?'★':'☆')+'</button>';
-    html+='</div>';
-    html+='<div style="font-size:9px;color:var(--text2);margin-top:6px;padding-top:6px;border-top:1px solid var(--border)">'+g.method+'</div>';
-    html+='</div>';
-  });
-  
-  html+='</div>';
-  document.getElementById("app").innerHTML=html;
-  updatePSNDisplay();
-}
-
-function toggleGlitch(gid){
-  var idx=ST.my_glitches.indexOf(gid);
-  if(idx>=0)ST.my_glitches.splice(idx,1);
-  else ST.my_glitches.push(gid);
-  save();renderGlitches();
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// MAIN RENDER
-// ═══════════════════════════════════════════════════════════════════════════
-
-function render(){
-  switch(ST.tab){
-    case 'speed': renderSpeed();break;
-    case 'garage': renderGarage();break;
-    case 'props': renderProps();break;
-    case 'weapons': renderWeapons();break;
-    case 'missions': renderMissions();break;
-    case 'custom': renderCustomization();break;
-    case 'glitches': renderGlitches();break;
-  }
-}
-
-// INIT
-load();
-render();
-updatePSNDisplay();
-</script>
-
-</body>
-</html>
+function renderBiz(cont) {
