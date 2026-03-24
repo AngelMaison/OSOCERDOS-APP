@@ -1029,6 +1029,10 @@ const PROP_DATA=[
   {id:"stilt3",name:"Stilt House – Marlowe Drive",price:"$1.5M–$2.1M",best:false,tags:["Stilt House","Garaje 10"],desc:"Casa en Marlowe Drive.",tips:[],missions:[]},
   {id:"stilt4",name:"Stilt House – Hillcrest Ave",price:"$1.6M–$2.2M",best:false,tags:["Stilt House","Garaje 10"],desc:"Casa en Hillcrest Avenue.",tips:[],missions:[]},
   {id:"stilt5",name:"Stilt House – Whispymound Drive",price:"$1.75M–$2.35M",best:false,tags:["Stilt House","Garaje 10"],desc:"Casa en Whispymound Drive.",tips:[],missions:[]},
+  {id:"mf_albany",name:"Albany Avenue Safehouse (Money Fronts)",price:"$10M",best:false,tags:["Mansión","Money Fronts 2024","Garaje 10"],maxVal:10000000,desc:"Mansión del dlc Money Fronts 2024. Gran garaje de 10 plazas.",tips:["Una de las nuevas propiedades de la actualización Money Fronts."],missions:[]},
+  {id:"mf_hillside",name:"Hillside Plaza Safehouse (Money Fronts)",price:"$11M",best:false,tags:["Mansión","Money Fronts 2024","Garaje 10"],maxVal:11000000,desc:"Mansión exclusiva del dlc Money Fronts 2024.",tips:[],missions:[]},
+  {id:"mf_vinewood",name:"Vinewood Mansion (Money Fronts)",price:"$12M",best:false,tags:["Mansión","Money Fronts 2024","Garaje 10"],maxVal:12000000,desc:"Mansión premium del dlc Money Fronts 2024.",tips:[],missions:[]},
+  {id:"mf_rockford",name:"Rockford Hills Mansion (Money Fronts)",price:"$13M",best:true,tags:["Mansión","Money Fronts 2024","Garaje 10","★"],maxVal:13000000,desc:"La mansión más cara del dlc Money Fronts 2024. La más exclusiva de Los Santos.",tips:["Solo para completistas con el patrimonio bien establecido."],missions:[]},
   {id:"stash",name:"Stash House",price:"$325K–$500K",best:false,tags:["Contrabando"],desc:"Para recoger drops de contrabando activo.",tips:[],missions:[]},
   {id:"casino_ph",name:"Penthouse del Casino",price:"$1.5M–$6.5M",best:true,tags:["Casino","Heist Casino","★"],desc:"Acceso al Casino Heist y misiones del casino.",tips:["Imprescindible para el Casino Heist."],missions:[{t:"Casino Heist",pay:"Hasta $3.6M bruto",tip:"Big Con + Artwork es el mejor approach."}]},
 ]},
@@ -1094,20 +1098,27 @@ const WD=[
 {cat:"SMG/Ametralladoras",id:"assault_smg",name:"SMG de Asalto",tier:"S+",dmg:73,rng:45,rpm:88,mk2:false,mods:["Silenciador","Cargador 50 balas","Mira Láser","Grip"],unlock:"Rango 0 ($3.500)",tip:"Mejor SMG del juego. Cadencia y daño excelentes como secundaria."},
 {cat:"SMG/Ametralladoras",id:"smg_mk2",name:"SMG Mk II",tier:"A",dmg:70,rng:42,rpm:85,mk2:true,mods:["Silenciador","Bala Trazadora","Bala Incendiaria","Bala Hollow Point"],unlock:"Conversión Mk II",tip:"Buena alternativa con opciones de munición."},
 {cat:"SMG/Ametralladoras",id:"combat_pdw",name:"PDW de Combate",tier:"B",dmg:60,rng:40,rpm:80,mk2:false,mods:["Silenciador","Cargador Ext."],unlock:"Rango 90",tip:"Sólida pero la Assault SMG la supera."},
+{cat:"SMG/Ametralladoras",id:"micro_smg_mk2",name:"Micro SMG Mk II",tier:"C",dmg:45,rng:30,rpm:90,mk2:true,mods:["Silenciador","Bala Trazadora","Bala Incendiaria","Cargador Ext."],unlock:"Conversión Mk II",tip:"No merece la conversión. La Assault SMG la supera en todo a mayor precio de mejora."},
 {cat:"SMG/Ametralladoras",id:"machine_pist",name:"Machine Pistol",tier:"C",dmg:40,rng:28,rpm:90,mk2:false,mods:["Cargador Ext."],unlock:"Rango 0",tip:"Desechable. La Assault SMG la supera en todo."},
 {cat:"Rifles de Asalto",id:"sp_carb_mk2",name:"Carabina Especial Mk II",tier:"S+",dmg:82,rng:75,rpm:80,mk2:true,mods:["Silenciador","Mira ACOG","Bala FMJ","Bala Explosiva","Grip","Cargador 100 balas"],unlock:"Conversión Mk II ($135K)",tip:"El mejor rifle del juego. FMJ perfora vehículos. Explosiva mortal."},
 {cat:"Rifles de Asalto",id:"ar_mk2",name:"Rifle de Asalto Mk II",tier:"A",dmg:78,rng:72,rpm:75,mk2:true,mods:["Silenciador","Mira ACOG","Bala FMJ","Bala Explosiva"],unlock:"Conversión Mk II",tip:"Sólido. La Carabina Especial lo supera."},
 {cat:"Rifles de Asalto",id:"carbine_mk2",name:"Carabina Mk II",tier:"A",dmg:75,rng:70,rpm:78,mk2:true,mods:["Silenciador","Mira Holográfica","Bala FMJ","Grip Vertical"],unlock:"Conversión Mk II",tip:"Buena precisión y daño equilibrado."},
+{cat:"Rifles de Asalto",id:"bullpup_mk2",name:"Bullpup Rifle Mk II",tier:"A",dmg:80,rng:72,rpm:82,mk2:true,mods:["Silenciador","Mira ACOG","Bala FMJ","Bala Explosiva","Grip"],unlock:"Conversión Mk II",tip:"Buena cadencia y precisión. Sólido como alternativa a la Carabina Especial."},
+{cat:"Rifles de Asalto",id:"military_rifle",name:"Military Rifle",tier:"A",dmg:77,rng:75,rpm:78,mk2:false,mods:["Silenciador","Mira ACOG","Grip Vertical"],unlock:"Tienda armas / Gun Van",tip:"Semi-automático pero daño alto por disparo. Bueno para PvP a distancia media."},
+{cat:"Rifles de Asalto",id:"sp_carb_mk2_v2",name:"Special Carbine Mk II",tier:"S+",dmg:82,rng:75,rpm:80,mk2:true,mods:["Silenciador","Mira ACOG","Bala FMJ","Bala Explosiva","Grip","Cargador 100 balas"],unlock:"Conversión Mk II ($135K)",tip:"Equivalente a la Carabina Especial Mk II. FMJ perfora vehículos."},
 {cat:"Rifles de Asalto",id:"comp_rifle",name:"Rifle Compacto",tier:"B",dmg:65,rng:55,rpm:70,mk2:false,mods:["Silenciador","Mira Holo"],unlock:"Rango 75",tip:"Compacto pero potente a media distancia."},
 {cat:"Escopetas",id:"ass_shot",name:"Escopeta de Asalto",tier:"S+",dmg:90,rng:35,rpm:65,mk2:false,mods:["Silenciador","Compensador","Grip Vertical","Cargador Ext."],unlock:"Rango 37",tip:"Mejor escopeta para CQC. Daño brutal en espacio cerrado."},
 {cat:"Escopetas",id:"combat_shot",name:"Escopeta de Combate",tier:"S+",dmg:95,rng:30,rpm:55,mk2:false,mods:["Silenciador","Compensador","Cargador Ext."],unlock:"Tienda armas",tip:"Mayor daño por disparo de escopeta. Letal a corta distancia."},
 {cat:"Escopetas",id:"pump_mk2",name:"Pump Shotgun Mk II",tier:"A",dmg:85,rng:38,rpm:40,mk2:true,mods:["Silenciador","Bala Explosiva","Bala Incendiaria","Mira ACOG"],unlock:"Conversión Mk II",tip:"Balas explosivas devastadoras contra grupos."},
+{cat:"Escopetas",id:"assault_shot_mk2",name:"Escopeta de Asalto Mk II",tier:"S+",dmg:93,rng:37,rpm:68,mk2:true,mods:["Silenciador","Bala Explosiva","Bala Incendiaria","Compensador","Cargador Ext."],unlock:"Conversión Mk II",tip:"La mejor escopeta. Balas explosivas + cadencia alta = destrucción total en CQC."},
 {cat:"Escopetas",id:"heavy_shot",name:"Escopeta Pesada",tier:"B",dmg:80,rng:32,rpm:35,mk2:false,mods:["Silenciador","Cargador Ext."],unlock:"Rango 0",tip:"Alternativa sólida a la de asalto."},
 {cat:"LMG",id:"combat_mg_mk2",name:"Metralleta Combate Mk II",tier:"S+",dmg:87,rng:78,rpm:77,mk2:true,mods:["Mira ACOG","Bala FMJ","Bala Perforante","Bala Explosiva","Grip","Cargador 200 balas"],unlock:"Conversión Mk II",tip:"Mejor LMG. Perfora vehículos con FMJ. Gran alcance."},
 {cat:"LMG",id:"minigun",name:"Minigun",tier:"S+",dmg:75,rng:60,rpm:95,mk2:false,mods:[],unlock:"Rango 120",tip:"Mayor cadencia del juego. Destruye vehículos en segundos."},
+{cat:"LMG",id:"minigun_mk2",name:"Minigun Mk II",tier:"S+",dmg:78,rng:62,rpm:99,mk2:true,mods:["Bala FMJ","Bala Explosiva"],unlock:"Conversión Mk II",tip:"La máxima cadencia del juego. Bala explosiva devastadora contra vehículos en grupos."},
 {cat:"LMG",id:"mg_mk2",name:"Ametralladora Mk II",tier:"B",dmg:80,rng:72,rpm:70,mk2:true,mods:["Mira ACOG","Bala FMJ"],unlock:"Conversión Mk II",tip:"Decente pero la Combat MG Mk II la supera."},
 {cat:"Francotiradores",id:"hsniper_mk2",name:"Francotirador Pesado Mk II",tier:"S+",dmg:99,rng:99,rpm:20,mk2:true,mods:["Mira 6x","Mira 8x","Mira Avanzada","Bala Explosiva","Bala FMJ","Bala VHP","Silenciador"],unlock:"Conversión Mk II ($109K)",tip:"Bala explosiva vuela vehículos. VHP penetra blindaje. Anti-air esencial."},
 {cat:"Francotiradores",id:"marksman_mk2",name:"Rifle de Tirador Mk II",tier:"A",dmg:92,rng:88,rpm:30,mk2:true,mods:["Silenciador","Mira 4x","Bala FMJ","Bala Explosiva"],unlock:"Conversión Mk II",tip:"Más rápido que el Pesado. Bueno para PvP dinámico."},
+{cat:"Francotiradores",id:"precision_rifle",name:"Precision Rifle",tier:"A",dmg:95,rng:95,rpm:18,mk2:false,mods:["Silenciador","Mira 4x","Mira 8x"],unlock:"Tienda armas / Gun Van",tip:"Semi-automático con alto daño. Buena alternativa al Pesado cuando necesitas disparos rápidos."},
 {cat:"Francotiradores",id:"sniper",name:"Rifle de Francotirador",tier:"B",dmg:85,rng:90,rpm:15,mk2:false,mods:["Silenciador","Mira 4x"],unlock:"Rango 21",tip:"Básico pero funcional. Actualiza a Mk II cuanto puedas."},
 {cat:"Armamento Pesado",id:"rpg",name:"RPG",tier:"S+",dmg:99,rng:65,rpm:10,mk2:false,mods:[],unlock:"Rango 100",tip:"Esencial para destruir vehículos terrestres rápido."},
 {cat:"Armamento Pesado",id:"homing",name:"Lanzacohetes Teleguiado",tier:"S+",dmg:99,rng:80,rpm:8,mk2:false,mods:[],unlock:"Tienda armas",tip:"Imprescindible para eliminar aeronaves. Se autodirige."},
@@ -1117,6 +1128,10 @@ const WD=[
 {cat:"Cuerpo a Cuerpo",id:"bat",name:"Bate de Béisbol",tier:"C",dmg:45,rng:5,rpm:50,mk2:false,mods:[],unlock:"Rango 0",tip:"Solo para estilo."},
 {cat:"Cuerpo a Cuerpo",id:"knife",name:"Navaja",tier:"C",dmg:25,rng:2,rpm:70,mk2:false,mods:[],unlock:"Rango 0",tip:"Kill de 1 golpe por la espalda en Cayo Perico."},
 {cat:"Cuerpo a Cuerpo",id:"machete",name:"Machete",tier:"C",dmg:55,rng:4,rpm:55,mk2:false,mods:[],unlock:"Rango 0",tip:"Más daño que el bate."},
+{cat:"Cuerpo a Cuerpo",id:"nightstick",name:"Porra Policial",tier:"C",dmg:30,rng:3,rpm:60,mk2:false,mods:[],unlock:"Rango 0",tip:"Solo para estilo. Mínimo daño."},
+{cat:"Cuerpo a Cuerpo",id:"hatchet",name:"Hacha",tier:"C",dmg:60,rng:4,rpm:45,mk2:false,mods:[],unlock:"Tienda armas",tip:"Más daño que el machete pero más lenta."},
+{cat:"Cuerpo a Cuerpo",id:"chain",name:"Cadena",tier:"C",dmg:35,rng:4,rpm:55,mk2:false,mods:[],unlock:"Rango 0",tip:"Solo estético."},
+{cat:"Cuerpo a Cuerpo",id:"taser",name:"Pistola Taser",tier:"C",dmg:20,rng:5,rpm:30,mk2:false,mods:[],unlock:"Tienda armas",tip:"Aturde brevemente al objetivo. Sin utilidad real en GTA Online."},
 {cat:"Armas Lanzables",id:"sticky",name:"Bomba Adhesiva",tier:"S+",dmg:99,rng:0,rpm:0,mk2:false,mods:[],unlock:"Rango 19",tip:"La más versátil. Pégala a vehículos y detónala. Esencial en heists."},
 {cat:"Armas Lanzables",id:"grenade",name:"Granada",tier:"A",dmg:90,rng:0,rpm:0,mk2:false,mods:[],unlock:"Rango 5",tip:"Clásica y efectiva. Buen radio de explosión."},
 {cat:"Armas Lanzables",id:"prox_mine",name:"Mina de Proximidad",tier:"A",dmg:95,rng:0,rpm:0,mk2:false,mods:[],unlock:"Rango 0",tip:"Perfecta para proteger puntos estratégicos."},
@@ -1206,7 +1221,11 @@ var ST={
   speedTab:'vehicles',
   stylePreset:'speed',
   styleOpen:{},
-  players:1
+  players:1,
+  locOpen:{},
+  locFilter:'all',
+  upgDone:{},
+  upgPriority:{}
 };
 
 function _saveAndUpdate(){updateInvBar();}
@@ -2035,6 +2054,7 @@ var LOC_DATA = [
 // ══ TOTAL INVESTMENT CALCULATOR ══
 function calcTotalInvestment(){
   var total = 0;
+  var counted2 = {};
   // Properties from BIZ_DATA (with max upgrades)
   BIZ_DATA.forEach(function(b){
     if(ST.owned_props[b.id]) total += b.priceMax;
@@ -2070,7 +2090,7 @@ function updateInvBar(){
   var psn = ST.psn || "Sin PSN";
   el.innerHTML = '<div class="inv-bar">'
     + '<div class="inv-bar-label">💎 VALOR CUENTA</div>'
-    + '<div class="inv-bar-psn">'+psn+'</div>'
+
     + '<div class="inv-bar-val">'+fmtP(total)+'</div>'
     + '<div class="inv-bar-sub">con mejoras máx.</div>'
     + '</div>';
@@ -2334,7 +2354,7 @@ function renderStyleGuide(){
     var isOpen=ST.styleOpen[300+ci];
     html+='<div class="vel-feel-card">'
       +'<div style="height:2px;background:'+car.color+'"></div>'
-      +'<div class="vel-feel-hdr" onclick="styOpen(300+ci)">'
+      +'<div class="vel-feel-hdr" onclick="styOpen('+(300+ci)+')">'
       +'<div style="width:36px;height:36px;border-radius:9px;background:'+car.color+'22;border:1px solid '+car.color+'44;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">'+car.ico+'</div>'
       +'<div style="flex:1"><div style="font-size:13px;font-weight:700">'+car.name+'</div><div style="font-size:10px;color:var(--text2);margin-top:1px">Sensación de velocidad: '+(car.score>0?car.score+'/100':'Avión — ver nota')+'</div></div>';
     if(car.score>0){
@@ -3017,7 +3037,7 @@ function renderProps(){
     var isOpenH=ST.advOpen['H'+hi];
     bodyHTML+='<div style="background:var(--bg2);border:1px solid '+(isOwned?hg.color+"55":"var(--border)")+';border-radius:11px;margin-bottom:8px;overflow:hidden">';
     bodyHTML+='<div style="height:3px;background:'+hg.color+';opacity:'+(isOwned?'.9':'.3')+'"></div>';
-    bodyHTML+='<div style="display:flex;align-items:center;gap:10px;padding:10px 13px;cursor:pointer;background:'+hg.color+(isOwned?'12':'08')+'" onclick="advTogHe(hi)">';
+    bodyHTML+='<div style="display:flex;align-items:center;gap:10px;padding:10px 13px;cursor:pointer;background:'+hg.color+(isOwned?'12':'08')+'" onclick="advTogHe('+hi+')">';
     bodyHTML+='<span style="font-size:22px">'+hg.ico+'</span>';
     bodyHTML+='<div style="flex:1"><div style="font-size:14px;font-weight:700">'+hg.name+'</div><div style="font-size:10px;color:var(--text2)">'+hg.desc+'</div></div>';
     bodyHTML+='<span style="font-size:13px;color:var(--text3)">'+(isOpenH?'▲':'▼')+'</span></div>';
@@ -3228,7 +3248,7 @@ function renderProps(){
     });
   }
 
-  document.getElementById("app").innerHTML='<div class="page">'+tabsHTML+trackerHTML+bodyHTML+'</div>';
+  document.getElementById("app").innerHTML='<div class="page">'+tabsHTML+bodyHTML+'</div>';
 }
 
 // ═══════════════════════════════════════════
