@@ -235,10 +235,44 @@ header{background:var(--bg);border-bottom:1px solid var(--border);padding:8px 12
 .mtag.best{color:var(--green);border-color:rgba(0,184,90,.25)}
 .mtag.fun{color:var(--purple);border-color:rgba(144,64,204,.25)}
 .ms-tab-row{display:flex;gap:0;margin-bottom:10px}
-.ms-tab{flex:1;padding:8px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-size:12px;font-weight:700;cursor:pointer;text-align:center;transition:all .2s}
-.ms-tab:first-child{border-radius:7px 0 0 7px;border-right:none}
-.ms-tab:last-child{border-radius:0 7px 7px 0}
-.ms-tab.on{background:var(--orange);border-color:var(--orange);color:#fff}
+.ms-tab{flex:1;padding:7px 4px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-size:11px;font-weight:700;cursor:pointer;text-align:center;transition:all .2s;border-right:none}
+.ms-tab:first-child{border-radius:7px 0 0 7px}
+.ms-tab:last-child{border-radius:0 7px 7px 0;border-right:1px solid var(--border)}
+.ms-tab.on{background:var(--orange);border-color:var(--orange);color:#fff;border-right:none}
+.ms-tab.on+.ms-tab{border-left:none}
+
+/* ── WEEKLY EVENTS ── */
+.ev-hero{background:linear-gradient(135deg,#08100a,#0a1408);border:1px solid rgba(0,184,90,.25);border-radius:12px;padding:13px;margin-bottom:12px;position:relative;overflow:hidden}
+.ev-hero::after{content:'📅';position:absolute;right:10px;top:8px;font-size:44px;opacity:.07}
+.ev-loading{text-align:center;padding:40px 20px;color:var(--text2)}
+.ev-load-ico{font-size:40px;margin-bottom:10px;animation:spin 1.5s linear infinite;display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ev-err{background:rgba(204,17,51,.1);border:1px solid rgba(204,17,51,.25);border-radius:10px;padding:14px;text-align:center;margin-bottom:10px}
+.ev-section{margin-bottom:12px}
+.ev-sec-hdr{font-family:'Black Ops One',sans-serif;font-size:11px;letter-spacing:1.5px;padding:5px 0 5px;border-bottom:1px solid var(--border);margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.ev-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:6px;position:relative;overflow:hidden}
+.ev-card-accent{position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:10px 0 0 10px}
+.ev-car-name{font-size:15px;font-weight:700;margin-bottom:4px}
+.ev-car-price{font-size:11px;color:var(--text2);margin-bottom:6px}
+.ev-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;border:1px solid currentColor;margin-right:4px;margin-bottom:3px}
+.ev-bonus-row{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.ev-bonus-row:last-child{border-bottom:none}
+.ev-bonus-mult{font-family:'Black Ops One',sans-serif;font-size:18px;width:36px;flex-shrink:0;text-align:center}
+.ev-bonus-name{flex:1;font-size:12px;font-weight:700}
+.ev-bonus-sub{font-size:10px;color:var(--text2)}
+.ev-disc-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.ev-disc-row:last-child{border-bottom:none}
+.ev-disc-pct{font-family:'Black Ops One',sans-serif;font-size:16px;color:var(--green);width:38px;flex-shrink:0;text-align:center}
+.ev-disc-info{flex:1;min-width:0}
+.ev-disc-name{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev-disc-prices{font-size:10px;color:var(--text2);margin-top:1px}
+.ev-match{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(255,215,0,.12);color:#ffd700;border:1px solid rgba(255,215,0,.3);flex-shrink:0}
+.ev-obj-item{display:flex;align-items:flex-start;gap:7px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:11px;color:var(--text)}
+.ev-obj-item:last-child{border-bottom:none}
+.ev-obj-n{font-size:14px;flex-shrink:0;margin-top:1px}
+.ev-refresh-btn{background:rgba(0,184,90,.1);border:1px solid rgba(0,184,90,.25);border-radius:8px;padding:8px 16px;color:var(--green);font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;margin:0 auto}
+.ev-refresh-btn:hover{background:rgba(0,184,90,.2)}
+.ev-week-lbl{font-size:9px;color:var(--text3);text-align:center;margin-bottom:10px;letter-spacing:1px}
 
 /* ── GLITCHES ── */
 .gl-tab-row{display:flex;gap:5px;margin-bottom:10px}
@@ -1229,7 +1263,13 @@ var ST={
   locOpen:{},
   locFilter:'all',
   upgDone:{},
-  upgPriority:{}
+  upgPriority:{},
+  // Weekly events
+  evLoading:false,
+  evData:null,
+  evError:false,
+  evErrorMsg:'',
+  evLastFetch:0
 };
 
 function _saveAndUpdate(){updateInvBar();}
@@ -3403,7 +3443,264 @@ function openMissionDw(type,idx){
     '<div class="dw-stl">📋 Descripción</div><div class="dw-txt">'+m.desc+'</div>'+
     '<div class="dw-stl">🚀 Trucos y consejos</div>'+tipsHTML);
 }
-function setMSTab(t){ST.mstab=t;renderMissions();}
+// ═══════════════════════════════════════════
+// WEEKLY EVENTS — AI + Web Search
+// ═══════════════════════════════════════════
+
+function fetchWeeklyEvents(){
+  if(ST.evLoading)return;
+  ST.evLoading=true;
+  ST.evError=false;
+  ST.evData=null;
+  renderMissions();
+
+  var today=new Date();
+  var dd=today.getDate();
+  var mm=today.getMonth()+1;
+  var yyyy=today.getFullYear();
+  var fechaHoy=dd+"/"+mm+"/"+yyyy;
+
+  var prompt='Hoy es '+fechaHoy+'. Busca en internet los eventos semanales actuales de GTA Online (GTA 5 Online). '
+    +'Necesito estos datos EXACTOS de la semana actual:\n'
+    +'1. Coche del podio del casino (Diamond Casino) — nombre exacto del vehículo y precio GTA$\n'
+    +'   — ¿Tiene mejora Imani Tech disponible? (sí/no)\n'
+    +'   — ¿Tiene mejora Hao\'s Special Works (HSW) disponible? (sí/no)\n'
+    +'2. Coche premio del LS Car Meet (Prize Ride) — nombre exacto y precio GTA$\n'
+    +'   — Objetivos para conseguirlo (exactamente qué hay que hacer y cuántos días)\n'
+    +'3. Bonificaciones activas esta semana (2x o 3x GTA$ y RP) — lista de actividades/modos/negocios con su multiplicador\n'
+    +'4. Descuentos en vehículos esta semana — nombre del vehículo, % de descuento, precio original y precio con descuento\n'
+    +'5. Descuentos en armas, mejoras o propiedades esta semana\n'
+    +'Fuentes fiables: rockstargames.com/newswire, tez2.altervista.org/gta-v-weekly, gtaweeekly.com, o similar.\n'
+    +'IMPORTANTE: Responde SOLO con un objeto JSON válido, sin texto antes ni después, sin bloques de código markdown. Formato exacto:\n'
+    +'{"semana":"dd/mm - dd/mm yyyy","casino":{"vehiculo":"Nombre","precio":"$X,XXX,XXX","imani":false,"hao":false,"nota":""},'
+    +'"ls_car_meet":{"vehiculo":"Nombre","precio":"$X,XXX,XXX","objetivos":["objetivo 1","objetivo 2"]},'
+    +'"bonificaciones":[{"multiplicador":"2x","tipo":"GTA$ y RP","actividad":"Nombre actividad","categoria":"heist/negocio/modo/carrera"}],'
+    +'"descuentos_vehiculos":[{"nombre":"Nombre","descuento":"40%","precio_original":"$X,XXX,XXX","precio_descuento":"$X,XXX,XXX"}],'
+    +'"descuentos_otros":[{"nombre":"Nombre","tipo":"arma/propiedad/mejora","descuento":"30%"}],'
+    +'"fuente":"URL o nombre del sitio consultado"}';
+
+  fetch("https://api.anthropic.com/v1/messages",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      model:"claude-sonnet-4-20250514",
+      max_tokens:1800,
+      tools:[{"type":"web_search_20250305","name":"web_search"}],
+      messages:[{role:"user",content:prompt}]
+    })
+  })
+  .then(function(r){return r.json();})
+  .then(function(data){
+    ST.evLoading=false;
+    // Extract text from content blocks (may include tool_use and tool_result blocks)
+    var textBlocks=data.content?data.content.filter(function(b){return b.type==="text";}):[];
+    var raw=textBlocks.map(function(b){return b.text||"";}).join("");
+    // Try to parse JSON — strip any markdown fences if present
+    var clean=raw.replace(/```json|```/g,"").trim();
+    // Extract first JSON object
+    var jsonMatch=clean.match(/\{[\s\S]*\}/);
+    if(jsonMatch){
+      try{
+        ST.evData=JSON.parse(jsonMatch[0]);
+        ST.evLastFetch=Date.now();
+        ST.evError=false;
+      }catch(e){
+        ST.evError=true;
+        ST.evErrorMsg="Error al parsear los datos. Respuesta recibida: "+clean.slice(0,120)+"...";
+      }
+    } else {
+      ST.evError=true;
+      ST.evErrorMsg="No se encontró JSON en la respuesta. Respuesta: "+clean.slice(0,150)+"...";
+    }
+    renderMissions();
+  })
+  .catch(function(e){
+    ST.evLoading=false;
+    ST.evError=true;
+    ST.evErrorMsg="Error de red: "+e.message;
+    renderMissions();
+  });
+}
+
+function renderWeeklyEvents(){
+  var html='';
+
+  // Hero
+  html+='<div class="ev-hero">'
+    +'<div style="font-family:Black Ops One,sans-serif;font-size:16px;color:var(--green);margin-bottom:3px">📅 Eventos Semanales GTA Online</div>'
+    +'<div style="font-size:11px;color:var(--text2);line-height:1.7">Datos en tiempo real: coche del casino, LS Car Meet, bonificaciones activas y descuentos de esta semana.</div>'
+    +'</div>';
+
+  if(ST.evLoading){
+    html+='<div class="ev-loading"><span class="ev-load-ico">⚙️</span><div style="font-size:13px;font-weight:700;margin-bottom:5px">Buscando eventos de esta semana...</div><div style="font-size:11px;color:var(--text3)">Consultando fuentes online de GTA Online</div></div>';
+    return html;
+  }
+
+  if(ST.evError){
+    html+='<div class="ev-err"><div style="font-size:24px;margin-bottom:8px">❌</div><div style="font-size:13px;font-weight:700;color:var(--red);margin-bottom:5px">No se pudieron cargar los eventos</div><div style="font-size:11px;color:var(--text2);margin-bottom:12px">'+ST.evErrorMsg+'</div><button class="ev-refresh-btn" onclick="fetchWeeklyEvents()">🔄 Reintentar</button></div>';
+    return html;
+  }
+
+  if(!ST.evData){
+    html+='<div style="text-align:center;padding:30px 20px">'
+      +'<div style="font-size:48px;margin-bottom:12px">📅</div>'
+      +'<div style="font-size:14px;font-weight:700;margin-bottom:6px">¿Qué toca esta semana?</div>'
+      +'<div style="font-size:11px;color:var(--text2);line-height:1.7;margin-bottom:16px">Cargamos el coche del casino, el premio del Car Meet, las bonificaciones 2x/3x y todos los descuentos de la semana actual.</div>'
+      +'<button class="ev-refresh-btn" onclick="fetchWeeklyEvents()">📡 Cargar eventos de esta semana</button>'
+      +'</div>';
+    return html;
+  }
+
+  var d=ST.evData;
+
+  // Week label
+  if(d.semana){
+    html+='<div class="ev-week-lbl">📆 SEMANA: '+d.semana.toUpperCase()+'</div>';
+  }
+
+  // ── CASINO PODIUM ──
+  if(d.casino){
+    var car=d.casino;
+    // Cross-reference: does the user own this vehicle?
+    var casinoVR=VR.find(function(v){return v.n.toLowerCase().indexOf((car.vehiculo||"").split(" ").slice(-1)[0].toLowerCase())>=0;});
+    var casinoGar=false;
+    Object.values(ST.garage).forEach(function(entries){entries.forEach(function(e){if(e.vi&&car.vehiculo&&e.vi.toLowerCase().indexOf(car.vehiculo.toLowerCase().slice(0,8))>=0)casinoGar=true;});});
+
+    html+='<div class="ev-section">';
+    html+='<div class="ev-sec-hdr" style="color:#ffd700"><span style="font-size:18px">🎰</span>COCHE DEL CASINO — PODIO</div>';
+    html+='<div class="ev-card"><div class="ev-card-accent" style="background:#ffd700"></div>';
+    html+='<div style="padding-left:8px">';
+    html+='<div class="ev-car-name">'+( car.vehiculo||"N/A" )+'</div>';
+    html+='<div class="ev-car-price">💰 '+( car.precio||"Precio desconocido" );
+    if(casinoGar)html+=' <span style="color:var(--green);font-weight:700">✅ Ya lo tienes</span>';
+    html+='</div>';
+    html+='<div>';
+    if(car.imani)html+='<span class="ev-badge" style="color:var(--cyan);border-color:rgba(0,200,224,.4)">🛡️ IMANI TECH</span>';
+    if(car.hao)html+='<span class="ev-badge" style="color:var(--hsw);border-color:rgba(224,112,0,.4)">⚡ HSW</span>';
+    if(!car.imani&&!car.hao)html+='<span class="ev-badge" style="color:var(--text3);border-color:var(--border)">Sin mejoras especiales</span>';
+    html+='</div>';
+    if(car.nota)html+='<div style="font-size:10px;color:var(--text2);margin-top:5px;font-style:italic">💡 '+car.nota+'</div>';
+    html+='<div style="font-size:10px;color:var(--text3);margin-top:6px">Gira la ruleta del casino cada día para conseguirlo gratis.</div>';
+    html+='</div></div></div>';
+  }
+
+  // ── LS CAR MEET ──
+  if(d.ls_car_meet){
+    var cm=d.ls_car_meet;
+    var cmGar=false;
+    Object.values(ST.garage).forEach(function(entries){entries.forEach(function(e){if(e.vi&&cm.vehiculo&&e.vi.toLowerCase().indexOf(cm.vehiculo.toLowerCase().slice(0,8))>=0)cmGar=true;});});
+
+    html+='<div class="ev-section">';
+    html+='<div class="ev-sec-hdr" style="color:var(--purple)"><span style="font-size:18px">🏎️</span>LS CAR MEET — PRIZE RIDE</div>';
+    html+='<div class="ev-card"><div class="ev-card-accent" style="background:var(--purple)"></div>';
+    html+='<div style="padding-left:8px">';
+    html+='<div class="ev-car-name">'+( cm.vehiculo||"N/A" )+'</div>';
+    html+='<div class="ev-car-price">💰 '+( cm.precio||"Precio desconocido" );
+    if(cmGar)html+=' <span style="color:var(--green);font-weight:700">✅ Ya lo tienes</span>';
+    html+='</div>';
+    if(cm.objetivos&&cm.objetivos.length){
+      html+='<div style="font-size:10px;font-weight:700;color:var(--purple);letter-spacing:.5px;margin:7px 0 4px">🎯 OBJETIVOS PARA CONSEGUIRLO:</div>';
+      cm.objetivos.forEach(function(obj,i){
+        html+='<div class="ev-obj-item"><span class="ev-obj-n">'+(i===0?"1️⃣":i===1?"2️⃣":i===2?"3️⃣":"▶️")+'</span><span>'+obj+'</span></div>';
+      });
+    }
+    html+='</div></div></div>';
+  }
+
+  // ── BONIFICACIONES ──
+  if(d.bonificaciones&&d.bonificaciones.length){
+    html+='<div class="ev-section">';
+    html+='<div class="ev-sec-hdr" style="color:var(--green)"><span style="font-size:18px">⚡</span>BONIFICACIONES ACTIVAS</div>';
+    html+='<div class="ev-card"><div class="ev-card-accent" style="background:var(--green)"></div><div style="padding-left:8px">';
+
+    // Group by multiplier for visual hierarchy
+    var catColors={"heist":"var(--yellow)","negocio":"var(--green)","modo":"var(--cyan)","carrera":"var(--orange)","mision":"var(--blue)"};
+    d.bonificaciones.forEach(function(b){
+      var mult=b.multiplicador||"2x";
+      var multColor=mult.indexOf("3")>=0?"var(--tsp)":mult.indexOf("2")>=0?"var(--ts)":"var(--tb)";
+      var catCol=catColors[b.categoria]||"var(--text2)";
+      // Cross-reference with owned properties
+      var isOwned=false;
+      var bName=(b.actividad||"").toLowerCase();
+      if(bName.indexOf("búnker")>=0||bName.indexOf("bunker")>=0)isOwned=!!ST.owned_props["bunker"];
+      else if(bName.indexOf("nightclub")>=0||bName.indexOf("club nocturno")>=0)isOwned=!!ST.owned_props["nightclub"];
+      else if(bName.indexOf("cayo")>=0)isOwned=!!ST.owned_props["kosatka"];
+      else if(bName.indexOf("casino")>=0)isOwned=!!ST.owned_props["arcade"];
+      else if(bName.indexOf("dr. dre")>=0||bName.indexOf("dre")>=0)isOwned=!!ST.owned_props["agency"];
+      else if(bName.indexOf("cocaína")>=0||bName.indexOf("cocaina")>=0||bName.indexOf("mc")>=0)isOwned=!!ST.owned_props["mc_coke"];
+      else if(bName.indexOf("ácido")>=0||bName.indexOf("acid")>=0)isOwned=!!ST.owned_props["acid_lab"];
+
+      html+='<div class="ev-bonus-row">';
+      html+='<div class="ev-bonus-mult" style="color:'+multColor+'">'+mult+'</div>';
+      html+='<div style="flex:1;min-width:0"><div class="ev-bonus-name">'+b.actividad+'</div>';
+      html+='<div class="ev-bonus-sub" style="color:'+catCol+'">'+b.tipo+(b.categoria?' · '+b.categoria.charAt(0).toUpperCase()+b.categoria.slice(1):'')+'</div></div>';
+      if(isOwned)html+='<span style="font-size:9px;color:var(--green);background:rgba(0,204,102,.1);border:1px solid rgba(0,204,102,.25);padding:2px 6px;border-radius:4px;flex-shrink:0;font-weight:700">✅ Tuyo</span>';
+      html+='</div>';
+    });
+    html+='</div></div></div>';
+  }
+
+  // ── DESCUENTOS VEHÍCULOS ──
+  if(d.descuentos_vehiculos&&d.descuentos_vehiculos.length){
+    html+='<div class="ev-section">';
+    html+='<div class="ev-sec-hdr" style="color:var(--orange)"><span style="font-size:18px">🚗</span>DESCUENTOS EN VEHÍCULOS</div>';
+    html+='<div class="ev-card"><div class="ev-card-accent" style="background:var(--orange)"></div><div style="padding-left:8px">';
+    d.descuentos_vehiculos.forEach(function(v){
+      // Check wishlist / garage
+      var inGar=false;
+      Object.values(ST.garage).forEach(function(entries){entries.forEach(function(e){if(e.vi&&v.nombre&&e.vi.toLowerCase().indexOf(v.nombre.toLowerCase().slice(0,6))>=0)inGar=true;});});
+      var inDB=VR.find(function(x){return v.nombre&&x.n.toLowerCase().indexOf(v.nombre.toLowerCase().slice(0,8))>=0;});
+      html+='<div class="ev-disc-row">';
+      html+='<div class="ev-disc-pct">'+( v.descuento||"?" )+'</div>';
+      html+='<div class="ev-disc-info"><div class="ev-disc-name">'+v.nombre+'</div>';
+      if(v.precio_original||v.precio_descuento){
+        html+='<div class="ev-disc-prices">';
+        if(v.precio_original)html+='<span style="text-decoration:line-through;color:var(--text3)">'+v.precio_original+'</span> ';
+        if(v.precio_descuento)html+='<span style="color:var(--green);font-weight:700">→ '+v.precio_descuento+'</span>';
+        html+='</div>';
+      }
+      if(inDB){
+        var t=inDB.h?'HSW':'';
+        var hasImani=inDB.u&&inDB.u.indexOf("Imani")>=0?"Imani":"";
+        if(t||hasImani)html+='<div style="margin-top:2px">'+( t?'<span class="ev-badge" style="color:var(--hsw);border-color:rgba(224,112,0,.3);font-size:8px">⚡ '+t+'</span>':'' )+( hasImani?'<span class="ev-badge" style="color:var(--cyan);border-color:rgba(0,200,224,.3);font-size:8px">🛡️ '+hasImani+'</span>':'' )+'</div>';
+      }
+      html+='</div>';
+      if(inGar)html+='<span class="ev-match">✅ Lo tienes</span>';
+      html+='</div>';
+    });
+    html+='</div></div></div>';
+  }
+
+  // ── OTROS DESCUENTOS ──
+  if(d.descuentos_otros&&d.descuentos_otros.length){
+    html+='<div class="ev-section">';
+    html+='<div class="ev-sec-hdr" style="color:var(--cyan)"><span style="font-size:18px">💸</span>DESCUENTOS EN ARMAS Y OTROS</div>';
+    html+='<div class="ev-card"><div class="ev-card-accent" style="background:var(--cyan)"></div><div style="padding-left:8px">';
+    d.descuentos_otros.forEach(function(v){
+      html+='<div class="ev-disc-row">';
+      html+='<div class="ev-disc-pct" style="color:var(--cyan)">'+( v.descuento||"?" )+'</div>';
+      html+='<div class="ev-disc-info"><div class="ev-disc-name">'+v.nombre+'</div>';
+      if(v.tipo)html+='<div class="ev-disc-prices">'+v.tipo.charAt(0).toUpperCase()+v.tipo.slice(1)+'</div>';
+      html+='</div></div>';
+    });
+    html+='</div></div></div>';
+  }
+
+  // Source + refresh
+  var lastStr='';
+  if(ST.evLastFetch>0){
+    var mins=Math.round((Date.now()-ST.evLastFetch)/60000);
+    lastStr=mins===0?'justo ahora':(mins===1?'hace 1 min':'hace '+mins+' min');
+  }
+  html+='<div style="text-align:center;margin-top:8px">';
+  if(d.fuente)html+='<div style="font-size:9px;color:var(--text3);margin-bottom:8px">Fuente: '+d.fuente+'</div>';
+  html+='<button class="ev-refresh-btn" onclick="fetchWeeklyEvents()">🔄 Actualizar'+( lastStr?' ('+lastStr+')':'' )+'</button>';
+  html+='</div>';
+
+  return html;
+}
+
+function setMSTab(t){ST.mstab=t;if(t==="events"&&!ST.evData&&!ST.evLoading)fetchWeeklyEvents();renderMissions();}
 function misStealthToggle(i){ST.advOpen['MH'+i]=!ST.advOpen['MH'+i];renderMissions();}
 function renderMissions(){
   var DIFF_COL={"Fácil":"var(--green)","Medio":"var(--yellow)","Difícil":"var(--red)","Pasivo":"var(--cyan)"};
@@ -3512,8 +3809,9 @@ function renderMissions(){
     '<button class="ms-tab'+(ST.mstab==="grind"?" on":"")+'" onclick="setMSTab(\'grind\')">💰 Dinero</button>'+
     '<button class="ms-tab'+(ST.mstab==="fun"?" on":"")+'" onclick="setMSTab(\'fun\')">🎮 Diversión</button>'+
     '<button class="ms-tab'+(ST.mstab==="stealth"?" on":"")+'" onclick="setMSTab(\'stealth\')">🥷 Sigilo</button>'+
+    '<button class="ms-tab'+(ST.mstab==="events"?" on":"")+' " onclick="setMSTab(\'events\')" style="'+(ST.mstab==="events"?"":"border-left:none")+'">📅 Eventos</button>'+
     '</div>'+
-    (ST.mstab==="grind"?grindHTML:ST.mstab==="stealth"?stealthHTML:funHTML)+
+    (ST.mstab==="grind"?grindHTML:ST.mstab==="stealth"?stealthHTML:ST.mstab==="events"?renderWeeklyEvents():funHTML)+
     '</div>';
 }
 
